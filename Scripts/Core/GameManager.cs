@@ -143,27 +143,48 @@ public class GameManager : MonoBehaviour
 
     private void SendToHospital(Player player)
     {
-        player.isInHospital = true;
-        player.skipTurns = 1;
-        economy.SubtractGold(player, 200);
-        
-        UIManager.Instance.ShowMessage($"{player.nickname} 被送入医院！");
+        if (player.hasImmunity)
+        {
+            player.hasImmunity = false;
+            UIManager.Instance.ShowMessage($"{player.nickname} 使用免罚卡避免了被送入医院！");
+        }
+        else
+        {
+            player.isInHospital = true;
+            player.skipTurns = 1;
+            economy.SubtractGold(player, 200);
+            UIManager.Instance.ShowMessage($"{player.nickname} 被送入医院！");
+        }
     }
 
     private void SendToPoliceStation(Player player)
     {
-        player.isInPoliceStation = true;
-        player.skipTurns = 1;
-        
-        UIManager.Instance.ShowPoliceStationPanel(player);
+        if (player.hasImmunity)
+        {
+            player.hasImmunity = false;
+            UIManager.Instance.ShowMessage($"{player.nickname} 使用免罚卡避免了被送入警局！");
+        }
+        else
+        {
+            player.isInPoliceStation = true;
+            player.skipTurns = 1;
+            UIManager.Instance.ShowPoliceStationPanel(player);
+        }
     }
 
     private void PayTax(Player player)
     {
-        int tax = (int)(player.gold * 0.1f);
-        economy.SubtractGold(player, tax);
-        
-        UIManager.Instance.ShowMessage($"{player.nickname} 支付了 {tax} 金币的税款！");
+        if (player.hasImmunity)
+        {
+            player.hasImmunity = false;
+            UIManager.Instance.ShowMessage($"{player.nickname} 使用免罚卡豁免了税款！");
+        }
+        else
+        {
+            int tax = (int)(player.gold * 0.1f);
+            economy.SubtractGold(player, tax);
+            UIManager.Instance.ShowMessage($"{player.nickname} 支付了 {tax} 金币的税款！");
+        }
     }
 
     private void DrawChanceCard()

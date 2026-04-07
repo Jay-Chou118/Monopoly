@@ -10,6 +10,8 @@ public class Player
     public bool isInHospital;
     public bool isInPoliceStation;
     public int skipTurns;
+    public bool hasDoubleRent;
+    public bool hasImmunity;
     
     public List<PropertyCell> properties = new List<PropertyCell>();
     public List<Card> cards = new List<Card>();
@@ -30,6 +32,8 @@ public class Player
         isInHospital = false;
         isInPoliceStation = false;
         skipTurns = 0;
+        hasDoubleRent = false;
+        hasImmunity = false;
         
         properties.Clear();
         cards.Clear();

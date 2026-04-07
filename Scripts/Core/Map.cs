@@ -33,12 +33,14 @@ public class PropertyCell : Cell
     public int upgradeCost;
     public int level;
     public Player owner;
+    public bool isMortgaged;
     
     public PropertyCell()
     {
         type = CellType.Property;
         level = 0;
         owner = null;
+        isMortgaged = false;
     }
 }
 
