@@ -1,24 +1,33 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// 格子类型枚举
+/// </summary>
 public enum CellType
 {
-    Start,
-    Property,
-    Special,
-    Card
+    Start,      // 起点
+    Property,   // 地产
+    Special,    // 特殊场所
+    Card        // 道具卡格
 }
 
+/// <summary>
+/// 特殊场所类型枚举
+/// </summary>
 public enum SpecialType
 {
-    Hospital,
-    PoliceStation,
-    Bank,
-    TaxOffice,
-    Park,
-    Chance
+    Hospital,       // 医院
+    PoliceStation,  // 警局
+    Bank,           // 银行
+    TaxOffice,      // 税务局
+    Park,           // 公园
+    Chance          // 机会
 }
 
+/// <summary>
+/// 格子基类
+/// </summary>
 public class Cell
 {
     public CellType type;
@@ -26,14 +35,17 @@ public class Cell
     public int index;
 }
 
+/// <summary>
+/// 地产格子
+/// </summary>
 public class PropertyCell : Cell
 {
-    public int price;
-    public int rent;
-    public int upgradeCost;
-    public int level;
-    public Player owner;
-    public bool isMortgaged;
+    public int price;           // 购买价格
+    public int rent;            // 基础租金
+    public int upgradeCost;     // 升级费用
+    public int level;           // 当前等级 (0-3)
+    public Player owner;        // 拥有者
+    public bool isMortgaged;    // 是否已抵押
     
     public PropertyCell()
     {
@@ -44,6 +56,9 @@ public class PropertyCell : Cell
     }
 }
 
+/// <summary>
+/// 特殊场所格子
+/// </summary>
 public class SpecialCell : Cell
 {
     public SpecialType specialType;
@@ -54,9 +69,14 @@ public class SpecialCell : Cell
     }
 }
 
+/// <summary>
+/// 地图管理类 - 负责棋盘和格子逻辑
+/// </summary>
 public class Map : MonoBehaviour
 {
-    public int totalCells = 36;
+    /// <summary>总格子数（动态获取）</summary>
+    public int totalCells => cells.Count;
+    
     private List<Cell> cells = new List<Cell>();
     
     private void Awake()
@@ -64,20 +84,32 @@ public class Map : MonoBehaviour
         Initialize();
     }
     
+    /// <summary>
+    /// 初始化地图
+    /// </summary>
     public void Initialize()
     {
         cells.Clear();
         CreateMap();
+        
+        // 验证格子数量
+        Debug.Log($"地图初始化完成，共 {cells.Count} 个格子");
     }
     
+    /// <summary>
+    /// 创建地图
+    /// </summary>
     private void CreateMap()
     {
-        CreateStartCell();
-        CreatePropertyCells();
-        CreateSpecialCells();
-        CreateCardCells();
+        CreateStartCell();          // 1 个
+        CreatePropertyCells();      // 24 个
+        CreateSpecialCells();       // 6 个
+        CreateCardCells();          // 4 个
     }
     
+    /// <summary>
+    /// 创建起点格子
+    /// </summary>
     private void CreateStartCell()
     {
         Cell startCell = new Cell();
@@ -87,6 +119,9 @@ public class Map : MonoBehaviour
         cells.Add(startCell);
     }
     
+    /// <summary>
+    /// 创建地产格子
+    /// </summary>
     private void CreatePropertyCells()
     {
         string[] propertyNames = {
@@ -113,7 +148,7 @@ public class Map : MonoBehaviour
             120, 130, 140, 150
         };
         
-        for (int i = 0; i< propertyNames.Length; i++)
+        for (int i = 0; i < propertyNames.Length; i++)
         {
             PropertyCell property = new PropertyCell();
             property.name = propertyNames[i];
@@ -125,6 +160,9 @@ public class Map : MonoBehaviour
         }
     }
     
+    /// <summary>
+    /// 创建特殊场所格子
+    /// </summary>
     private void CreateSpecialCells()
     {
         SpecialCell hospital = new SpecialCell();
@@ -164,9 +202,12 @@ public class Map : MonoBehaviour
         cells.Add(chance);
     }
     
+    /// <summary>
+    /// 创建道具卡格子
+    /// </summary>
     private void CreateCardCells()
     {
-        for (int i = 0; i< 4; i++)
+        for (int i = 0; i < 4; i++)
         {
             Cell cardCell = new Cell();
             cardCell.type = CellType.Card;
@@ -176,20 +217,30 @@ public class Map : MonoBehaviour
         }
     }
     
+    /// <summary>
+    /// 获取指定索引的格子
+    /// </summary>
     public Cell GetCell(int index)
     {
-        if (index >= 0 && index< cells.Count)
+        if (index >= 0 && index < cells.Count)
         {
             return cells[index];
         }
+        Debug.LogWarning($"格子索引越界: {index}, 总格子数: {cells.Count}");
         return null;
     }
     
-    public List<Cell>GetAllCells()
+    /// <summary>
+    /// 获取所有格子
+    /// </summary>
+    public List<Cell> GetAllCells()
     {
         return cells;
     }
     
+    /// <summary>
+    /// 获取所有地产格子
+    /// </summary>
     public List<PropertyCell> GetAllProperties()
     {
         List<PropertyCell> properties = new List<PropertyCell>();
@@ -203,6 +254,9 @@ public class Map : MonoBehaviour
         return properties;
     }
     
+    /// <summary>
+    /// 获取所有特殊场所格子
+    /// </summary>
     public List<SpecialCell> GetAllSpecialCells()
     {
         List<SpecialCell> specialCells = new List<SpecialCell>();

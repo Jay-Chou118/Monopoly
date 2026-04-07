@@ -1,18 +1,24 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// 卡牌类型枚举
+/// </summary>
 public enum CardType
 {
-    FixedDice,
-    DoubleRent,
-    Immunity,
-    Frame,
-    Demolish,
-    Extort,
-    LeaveHospital,
-    LeavePolice
+    FixedDice,      // 定点骰子卡
+    DoubleRent,     // 双倍租金卡
+    Immunity,       // 免罚卡
+    Frame,          // 陷害卡
+    Demolish,       // 拆迁卡
+    Extort,         // 勒索卡
+    LeaveHospital,  // 出院卡
+    LeavePolice     // 保释卡
 }
 
+/// <summary>
+/// 卡牌类
+/// </summary>
 public class Card
 {
     public CardType type;
@@ -27,17 +33,32 @@ public class Card
     }
 }
 
+/// <summary>
+/// 卡牌系统 - 负责道具卡和机会卡的管理
+/// </summary>
 public class CardSystem : MonoBehaviour
 {
     private List<Card> allCards = new List<Card>();
     private List<Card> chanceCards = new List<Card>();
     
+    private void Awake()
+    {
+        // 单例模式在 GameManager 中统一管理
+    }
+
+    /// <summary>
+    /// 初始化卡牌系统
+    /// </summary>
     public void Initialize()
     {
         CreateCards();
         CreateChanceCards();
+        Debug.Log($"卡牌系统初始化完成，道具卡 {allCards.Count} 张，机会卡 {chanceCards.Count} 张");
     }
     
+    /// <summary>
+    /// 创建道具卡
+    /// </summary>
     private void CreateCards()
     {
         allCards.Add(new Card(CardType.FixedDice, "定点骰子卡", "本回合指定掷出 1~6 任意点数"));
@@ -50,6 +71,9 @@ public class CardSystem : MonoBehaviour
         allCards.Add(new Card(CardType.LeavePolice, "保释卡", "自身在警局时立即离开"));
     }
     
+    /// <summary>
+    /// 创建机会卡
+    /// </summary>
     private void CreateChanceCards()
     {
         chanceCards.Add(new Card(CardType.FixedDice, "幸运骰子", "获得一次定点骰子机会"));
@@ -62,20 +86,35 @@ public class CardSystem : MonoBehaviour
         chanceCards.Add(new Card(CardType.LeavePolice, "法律援助", "获得一张保释卡"));
     }
     
+    /// <summary>
+    /// 随机获取一张道具卡
+    /// </summary>
     public Card GetRandomCard()
     {
         if (allCards.Count == 0) return null;
         return allCards[Random.Range(0, allCards.Count)];
     }
     
+    /// <summary>
+    /// 随机获取一张机会卡
+    /// </summary>
     public Card GetRandomChanceCard()
     {
         if (chanceCards.Count == 0) return null;
         return chanceCards[Random.Range(0, chanceCards.Count)];
     }
     
+    /// <summary>
+    /// 给玩家随机发放一张道具卡
+    /// </summary>
     public bool GiveRandomCard(Player player)
     {
+        if (player == null)
+        {
+            Debug.LogWarning("GiveRandomCard called with null player");
+            return false;
+        }
+        
         if (!player.HasFreeSlots())
         {
             UIManager.Instance.ShowError("道具卡已满！");
@@ -92,8 +131,17 @@ public class CardSystem : MonoBehaviour
         return false;
     }
     
+    /// <summary>
+    /// 执行卡牌效果
+    /// </summary>
     public void ExecuteCard(Card card, Player player)
     {
+        if (card == null || player == null)
+        {
+            Debug.LogWarning("ExecuteCard called with null card or player");
+            return;
+        }
+        
         switch (card.type)
         {
             case CardType.FixedDice:
@@ -125,27 +173,41 @@ public class CardSystem : MonoBehaviour
         player.RemoveCard(card);
     }
     
+    /// <summary>
+    /// 执行定点骰子卡
+    /// </summary>
     private void ExecuteFixedDiceCard(Player player)
     {
         UIManager.Instance.ShowFixedDicePanel();
     }
     
+    /// <summary>
+    /// 执行双倍租金卡
+    /// </summary>
     private void ExecuteDoubleRentCard(Player player)
     {
         player.hasDoubleRent = true;
         UIManager.Instance.ShowMessage($"{player.nickname} 启用了双倍租金卡！");
     }
     
+    /// <summary>
+    /// 执行免罚卡
+    /// </summary>
     private void ExecuteImmunityCard(Player player)
     {
         player.hasImmunity = true;
         UIManager.Instance.ShowMessage($"{player.nickname} 获得了免罚保护！");
     }
     
+    /// <summary>
+    /// 执行陷害卡
+    /// </summary>
     private void ExecuteFrameCard(Player player)
     {
         UIManager.Instance.ShowTargetPlayerPanel((targetPlayer) =>
         {
+            if (targetPlayer == null) return;
+            
             targetPlayer.isInHospital = true;
             targetPlayer.skipTurns = 1;
             Economy.Instance.SubtractGold(targetPlayer, 200);
@@ -153,11 +215,16 @@ public class CardSystem : MonoBehaviour
         });
     }
     
+    /// <summary>
+    /// 执行拆迁卡
+    /// </summary>
     private void ExecuteDemolishCard(Player player)
     {
         UIManager.Instance.ShowTargetPropertyPanel((property) =>
         {
-            if (property.owner != player && property.level >0)
+            if (property == null) return;
+            
+            if (property.owner != player && property.level > 0)
             {
                 int compensation = property.upgradeCost / 2;
                 Economy.Instance.TransferGold(player, property.owner, compensation);
@@ -171,16 +238,24 @@ public class CardSystem : MonoBehaviour
         });
     }
     
+    /// <summary>
+    /// 执行勒索卡
+    /// </summary>
     private void ExecuteExtortCard(Player player)
     {
         UIManager.Instance.ShowTargetPlayerPanel((targetPlayer) =>
         {
+            if (targetPlayer == null) return;
+            
             int amount = Random.Range(100, 301);
             Economy.Instance.TransferGold(targetPlayer, player, amount);
             UIManager.Instance.ShowMessage($"{player.nickname} 勒索了 {targetPlayer.nickname} {amount} 金币！");
         });
     }
     
+    /// <summary>
+    /// 执行出院卡
+    /// </summary>
     private void ExecuteLeaveHospitalCard(Player player)
     {
         if (player.isInHospital)
@@ -195,6 +270,9 @@ public class CardSystem : MonoBehaviour
         }
     }
     
+    /// <summary>
+    /// 执行保释卡
+    /// </summary>
     private void ExecuteLeavePoliceCard(Player player)
     {
         if (player.isInPoliceStation)
