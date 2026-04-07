@@ -36,6 +36,7 @@ Thumbs.db
 # Build outputs
 Build/Windows/
 Build/macOS/
+Monopoly_3D/Build/
 
 # Temporary files
 *.tmp
