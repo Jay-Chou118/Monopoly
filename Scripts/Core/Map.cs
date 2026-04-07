@@ -77,6 +77,9 @@ public class Map : MonoBehaviour
     /// <summary>总格子数（动态获取）</summary>
     public int totalCells => cells.Count;
     
+    /// <summary>地产数据配置</summary>
+    public PropertyData[] propertyDatas;
+    
     private List<Cell> cells = new List<Cell>();
     
     private void Awake()
@@ -124,39 +127,57 @@ public class Map : MonoBehaviour
     /// </summary>
     private void CreatePropertyCells()
     {
-        string[] propertyNames = {
-            "阳光小区", "幸福花园", "和平广场", "友谊大厦", "团结公寓",
-            "希望田野", "梦想小镇", "未来城市", "科技园区", "文化中心",
-            "体育场馆", "艺术殿堂", "商业中心", "金融大厦", "购物中心",
-            "美食街", "娱乐城", "休闲广场", "度假酒店", "观光景点",
-            "教育园区", "医疗中心", "工业园区", "农业基地"
-        };
-        
-        int[] prices = {
-            100, 150, 200, 250, 300,
-            350, 400, 450, 500, 550,
-            600, 650, 700, 750, 800,
-            850, 900, 950, 1000, 1100,
-            1200, 1300, 1400, 1500
-        };
-        
-        int[] rents = {
-            10, 15, 20, 25, 30,
-            35, 40, 45, 50, 55,
-            60, 65, 70, 75, 80,
-            85, 90, 95, 100, 110,
-            120, 130, 140, 150
-        };
-        
-        for (int i = 0; i < propertyNames.Length; i++)
+        // 优先使用ScriptableObject配置数据
+        if (propertyDatas != null && propertyDatas.Length > 0)
         {
-            PropertyCell property = new PropertyCell();
-            property.name = propertyNames[i];
-            property.price = prices[i];
-            property.rent = rents[i];
-            property.upgradeCost = prices[i] / 2;
-            property.index = cells.Count;
-            cells.Add(property);
+            foreach (PropertyData data in propertyDatas)
+            {
+                PropertyCell property = new PropertyCell();
+                property.name = data.propertyName;
+                property.price = data.price;
+                property.rent = data.rent;
+                property.upgradeCost = data.upgradeCost;
+                property.index = cells.Count;
+                cells.Add(property);
+            }
+        }
+        else
+        {
+            // 使用硬编码数据作为后备
+            string[] propertyNames = {
+                "阳光小区", "幸福花园", "和平广场", "友谊大厦", "团结公寓",
+                "希望田野", "梦想小镇", "未来城市", "科技园区", "文化中心",
+                "体育场馆", "艺术殿堂", "商业中心", "金融大厦", "购物中心",
+                "美食街", "娱乐城", "休闲广场", "度假酒店", "观光景点",
+                "教育园区", "医疗中心", "工业园区", "农业基地"
+            };
+            
+            int[] prices = {
+                100, 150, 200, 250, 300,
+                350, 400, 450, 500, 550,
+                600, 650, 700, 750, 800,
+                850, 900, 950, 1000, 1100,
+                1200, 1300, 1400, 1500
+            };
+            
+            int[] rents = {
+                10, 15, 20, 25, 30,
+                35, 40, 45, 50, 55,
+                60, 65, 70, 75, 80,
+                85, 90, 95, 100, 110,
+                120, 130, 140, 150
+            };
+            
+            for (int i = 0; i< propertyNames.Length; i++)
+            {
+                PropertyCell property = new PropertyCell();
+                property.name = propertyNames[i];
+                property.price = prices[i];
+                property.rent = rents[i];
+                property.upgradeCost = prices[i] / 2;
+                property.index = cells.Count;
+                cells.Add(property);
+            }
         }
     }
     
