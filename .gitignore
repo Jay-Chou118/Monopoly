@@ -1,0 +1,46 @@
+# Unity generated files
+[Ll]ibrary/
+[Oo]bj/
+[Bb]uild/
+[Tt]emp/
+
+# Unity Package Manager
+[Pp]ackages/
+
+# Unity Project Settings
+[Pp]roject[Ss]ettings/
+
+# macOS
+.DS_Store
+*.pem
+
+# Windows
+Thumbs.db
+*.stackdump
+
+# Visual Studio
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+*.iml
+*.ipr
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Build outputs
+Build/Windows/
+Build/macOS/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# macOS specific
+*.app/Contents/MacOS/
