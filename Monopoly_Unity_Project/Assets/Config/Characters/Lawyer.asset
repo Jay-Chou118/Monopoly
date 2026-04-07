@@ -24,7 +24,7 @@ GameObject:
   m_Component:
   - {fileID: 11400002}
   m_Layer: 0
-  m_Name: 冒险家
+  m_Name: Lawyer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42,15 +42,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0000000000000000f000000000000000, type: 3}
   m_Name: ""
   m_EditorClassIdentifier: ""
-  characterName: 冒险家
-  description: 初始多 2 张随机道具卡，骰子最小值 2（不会走 1 步）
+  characterName: Lawyer
+  description: No fine when sent to hospital/police, Property purchase +15%
   icon: {fileID: 0}
-  propertyBuyDiscount: 0
+  propertyBuyDiscount: 0.15
   rentIncomeBonus: 0
   startBonusGold: 0
   initialGoldAdjustment: 0
-  extraCards: 2
-  diceMinValue: 2
-  freeHospitalPolice: 0
+  extraCards: 0
+  diceMinValue: 1
+  freeHospitalPolice: 1
   upgradeCostDiscount: 0
   extraHospitalPoliceFine: 0

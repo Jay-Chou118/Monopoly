@@ -24,7 +24,7 @@ GameObject:
   m_Component:
   - {fileID: 11400002}
   m_Layer: 0
-  m_Name: 幸运儿
+  m_Name: Miser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42,15 +42,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0000000000000000f000000000000000, type: 3}
   m_Name: ""
   m_EditorClassIdentifier: ""
-  characterName: 幸运儿
-  description: 起点奖励 +300（800），初始金币 -300（2700）
+  characterName: Miser
+  description: Rent income +30%, Extra fine 200 when sent to hospital/police
   icon: {fileID: 0}
   propertyBuyDiscount: 0
-  rentIncomeBonus: 0
-  startBonusGold: 300
-  initialGoldAdjustment: -300
+  rentIncomeBonus: 0.3
+  startBonusGold: 0
+  initialGoldAdjustment: 0
   extraCards: 0
   diceMinValue: 1
   freeHospitalPolice: 0
   upgradeCostDiscount: 0
-  extraHospitalPoliceFine: 0
+  extraHospitalPoliceFine: 200

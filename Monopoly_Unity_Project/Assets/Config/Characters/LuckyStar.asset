@@ -24,7 +24,7 @@ GameObject:
   m_Component:
   - {fileID: 11400002}
   m_Layer: 0
-  m_Name: 律师
+  m_Name: LuckyStar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42,15 +42,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0000000000000000f000000000000000, type: 3}
   m_Name: ""
   m_EditorClassIdentifier: ""
-  characterName: 律师
-  description: 送医/警局免罚款，地产购买 +15%
+  characterName: LuckyStar
+  description: Start bonus +300 (800), Initial gold -300 (2700)
   icon: {fileID: 0}
-  propertyBuyDiscount: 0.15
+  propertyBuyDiscount: 0
   rentIncomeBonus: 0
-  startBonusGold: 0
-  initialGoldAdjustment: 0
+  startBonusGold: 300
+  initialGoldAdjustment: -300
   extraCards: 0
   diceMinValue: 1
-  freeHospitalPolice: 1
+  freeHospitalPolice: 0
   upgradeCostDiscount: 0
   extraHospitalPoliceFine: 0

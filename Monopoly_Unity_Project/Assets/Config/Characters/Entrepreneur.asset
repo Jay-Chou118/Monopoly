@@ -24,7 +24,7 @@ GameObject:
   m_Component:
   - {fileID: 11400002}
   m_Layer: 0
-  m_Name: 企业家
+  m_Name: Entrepreneur
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42,8 +42,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0000000000000000f000000000000000, type: 3}
   m_Name: ""
   m_EditorClassIdentifier: ""
-  characterName: 企业家
-  description: 地产购买 -15%，过路费收入 -15%
+  characterName: Entrepreneur
+  description: Property purchase -15%, Rent income -15%
   icon: {fileID: 0}
   propertyBuyDiscount: -0.15
   rentIncomeBonus: -0.15

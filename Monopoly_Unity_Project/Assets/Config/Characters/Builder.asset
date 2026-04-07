@@ -24,7 +24,7 @@ GameObject:
   m_Component:
   - {fileID: 11400002}
   m_Layer: 0
-  m_Name: 建筑商
+  m_Name: Builder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42,8 +42,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0000000000000000f000000000000000, type: 3}
   m_Name: ""
   m_EditorClassIdentifier: ""
-  characterName: 建筑商
-  description: 升级费用 -25%，地产购买 +10%
+  characterName: Builder
+  description: Upgrade cost -25%, Property purchase +10%
   icon: {fileID: 0}
   propertyBuyDiscount: 0.1
   rentIncomeBonus: 0
