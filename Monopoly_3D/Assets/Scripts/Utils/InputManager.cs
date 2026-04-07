@@ -10,8 +10,6 @@ public class InputManager : MonoBehaviour
 
 #if ENABLE_INPUT_SYSTEM
     private UnityEngine.InputSystem.PlayerInput playerInput;
-#elif ENABLE_LEGACY_INPUT_MANAGER
-    // 旧输入系统不需要额外变量
 #endif
 
     private void Awake()
@@ -39,7 +37,7 @@ public class InputManager : MonoBehaviour
 #if ENABLE_INPUT_SYSTEM
         var mouse = UnityEngine.InputSystem.Mouse.current;
         return mouse != null && mouse.leftButton.isPressed;
-#elif ENABLE_LEGACY_INPUT_MANAGER
+#else
         return Input.GetMouseButton(button);
 #endif
     }
@@ -56,7 +54,7 @@ public class InputManager : MonoBehaviour
         // 将 KeyCode 转换为 Key
         var inputKey = ConvertKeyCodeToKey(key);
         return keyboard[inputKey].isPressed;
-#elif ENABLE_LEGACY_INPUT_MANAGER
+#else
         return Input.GetKey(key);
 #endif
     }
@@ -69,7 +67,7 @@ public class InputManager : MonoBehaviour
 #if ENABLE_INPUT_SYSTEM
         var mouse = UnityEngine.InputSystem.Mouse.current;
         return mouse != null ? mouse.position.ReadValue() : Vector2.zero;
-#elif ENABLE_LEGACY_INPUT_MANAGER
+#else
         return Input.mousePosition;
 #endif
     }
@@ -82,7 +80,7 @@ public class InputManager : MonoBehaviour
 #if ENABLE_INPUT_SYSTEM
         var mouse = UnityEngine.InputSystem.Mouse.current;
         return mouse != null ? mouse.delta.ReadValue() : Vector2.zero;
-#elif ENABLE_LEGACY_INPUT_MANAGER
+#else
         return new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 #endif
     }
@@ -95,7 +93,7 @@ public class InputManager : MonoBehaviour
 #if ENABLE_INPUT_SYSTEM
         var mouse = UnityEngine.InputSystem.Mouse.current;
         return mouse != null ? mouse.scroll.y.ReadValue() : 0f;
-#elif ENABLE_LEGACY_INPUT_MANAGER
+#else
         return Input.GetAxis("Mouse ScrollWheel");
 #endif
     }
@@ -115,7 +113,7 @@ public class InputManager : MonoBehaviour
         if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) movement.x -= 1;
         if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) movement.x += 1;
         return movement;
-#elif ENABLE_LEGACY_INPUT_MANAGER
+#else
         return new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 #endif
     }
