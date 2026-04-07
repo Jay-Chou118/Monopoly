@@ -1,0 +1,12 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!129 &1
+PlayerSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 24
+  productGUID: 8a4f8a2c3d1e4f5a6b7c8d9e0f1a2b3c
+  companyName: MonopolyStudio
+  productName: Monopoly 3D
+  defaultScreenWidth: 1920
+  defaultScreenHeight: 1080
+  runInBackground: 1

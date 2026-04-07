@@ -4,11 +4,11 @@
 [Bb]uild/
 [Tt]emp/
 
-# Unity Package Manager
-[Pp]ackages/
+# Unity Package Manager - 不要忽略_packages ! 
+# _packages 包含关键的包依赖信息
 
-# Unity Project Settings
-[Pp]roject[Ss]ettings/
+# Unity Project Settings - 不要忽略 ! 
+# ProjectSettings 包含项目配置，导入Unity时必须
 
 # macOS
 .DS_Store
@@ -37,6 +37,9 @@ Thumbs.db
 Build/Windows/
 Build/macOS/
 Monopoly_3D/Build/
+
+# User Settings - 用户特定的设置可以忽略
+Monopoly_3D/UserSettings/
 
 # Temporary files
 *.tmp
