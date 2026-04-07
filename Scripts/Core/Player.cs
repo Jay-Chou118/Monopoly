@@ -23,6 +23,8 @@ public class Player
     public bool hasDoubleRent;
     /// <summary>是否拥有免罚效果</summary>
     public bool hasImmunity;
+    /// <summary>选择的角色</summary>
+    public CharacterData character;
     
     /// <summary>拥有的地产列表</summary>
     public List<PropertyCell> properties = new List<PropertyCell>();
@@ -38,9 +40,11 @@ public class Player
     /// 构造函数
     /// </summary>
     /// <param name="nickname">玩家昵称</param>
-    public Player(string nickname)
+    /// <param name="character">选择的角色</param>
+    public Player(string nickname, CharacterData character = null)
     {
         this.nickname = nickname;
+        this.character = character;
         ResetPlayer();
     }
     
@@ -50,6 +54,13 @@ public class Player
     public void ResetPlayer()
     {
         gold = INITIAL_GOLD;
+        
+        // 应用角色初始金币调整
+        if (character != null)
+        {
+            gold += character.initialGoldAdjustment;
+        }
+        
         position = 0;
         isBankrupt = false;
         isInHospital = false;
@@ -60,6 +71,13 @@ public class Player
         
         properties.Clear();
         cards.Clear();
+        
+        // 应用角色初始额外道具卡
+        if (character != null && character.extraCards >0)
+        {
+            // 这里需要从CardSystem获取随机卡片
+            // 暂时留空，在GameManager中处理
+        }
     }
     
     /// <summary>

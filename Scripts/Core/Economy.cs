@@ -118,6 +118,12 @@ public class Economy : MonoBehaviour
         int levelMultiplier = 1 + property.level;
         int rent = baseRent * levelMultiplier;
         
+        // 应用角色过路费收入加成
+        if (property.owner.character != null)
+        {
+            rent = Mathf.RoundToInt(rent * (1 + property.owner.character.rentIncomeBonus));
+        }
+        
         // 双倍租金效果
         if (property.owner.hasDoubleRent)
         {
@@ -137,7 +143,37 @@ public class Economy : MonoBehaviour
         {
             return 0;
         }
-        return property.upgradeCost * (property.level + 1);
+        
+        int baseCost = property.upgradeCost * (property.level + 1);
+        
+        // 应用角色升级费用折扣
+        if (property.owner != null && property.owner.character != null)
+        {
+            baseCost = Mathf.RoundToInt(baseCost * (1 + property.owner.character.upgradeCostDiscount));
+        }
+        
+        return baseCost;
+    }
+
+    /// <summary>
+    /// 计算地产购买价格（考虑角色折扣）
+    /// </summary>
+    public int CalculateBuyPrice(PropertyCell property, Player buyer)
+    {
+        if (property == null)
+        {
+            return 0;
+        }
+        
+        int basePrice = property.price;
+        
+        // 应用角色购买折扣
+        if (buyer != null && buyer.character != null)
+        {
+            basePrice = Mathf.RoundToInt(basePrice * (1 + buyer.character.propertyBuyDiscount));
+        }
+        
+        return basePrice;
     }
 
     /// <summary>

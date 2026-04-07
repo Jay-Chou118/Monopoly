@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
     public CardSystem cardSystem;
     /// <summary>经济系统引用</summary>
     public Economy economy;
+    /// <summary>可选角色列表</summary>
+    public CharacterData[] availableCharacters;
 
     // 常量定义
     private const int DICE_MIN = 1;
@@ -61,6 +63,29 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 创建新玩家
+    /// </summary>
+    /// <param name="nickname">玩家昵称</param>
+    /// <param name="character">选择的角色</param>
+    /// <returns>创建的玩家</returns>
+    public Player CreatePlayer(string nickname, CharacterData character)
+    {
+        Player player = new Player(nickname, character);
+        players.Add(player);
+        
+        // 应用角色初始额外道具卡
+        if (character != null && character.extraCards > 0)
+        {
+            for (int i = 0; i< character.extraCards; i++)
+            {
+                cardSystem.GiveRandomCard(player);
+            }
+        }
+        
+        return player;
+    }
+    
+    /// <summary>
     /// 开始新游戏
     /// </summary>
     public void StartGame()
@@ -71,6 +96,15 @@ public class GameManager : MonoBehaviour
         foreach (Player player in players)
         {
             player.ResetPlayer();
+            
+            // 重新应用角色初始额外道具卡
+            if (player.character != null && player.character.extraCards >0)
+            {
+                for (int i = 0; i< player.character.extraCards; i++)
+                {
+                    cardSystem.GiveRandomCard(player);
+                }
+            }
         }
         
         UpdateCurrentPlayer();
@@ -83,7 +117,16 @@ public class GameManager : MonoBehaviour
     {
         if (!IsCurrentPlayerTurn() || isGameOver) return;
 
-        int diceResult = Random.Range(DICE_MIN, DICE_MAX);
+        Player currentPlayer = players[currentPlayerIndex];
+        int minValue = DICE_MIN;
+        
+        // 应用角色骰子最小值限制
+        if (currentPlayer.character != null && currentPlayer.character.diceMinValue > minValue)
+        {
+            minValue = currentPlayer.character.diceMinValue;
+        }
+
+        int diceResult = Random.Range(minValue, DICE_MAX);
         MovePlayer(diceResult);
     }
 
@@ -100,8 +143,16 @@ public class GameManager : MonoBehaviour
         // 检查是否经过起点（绕圈）
         if (oldPosition + steps >= map.totalCells)
         {
-            economy.AddGold(currentPlayer, PASS_START_REWARD);
-            UIManager.Instance.ShowMessage($"{currentPlayer.nickname} 经过起点，获得 {PASS_START_REWARD} 金币！");
+            int reward = PASS_START_REWARD;
+            
+            // 应用角色起点奖励加成
+            if (currentPlayer.character != null)
+            {
+                reward += currentPlayer.character.startBonusGold;
+            }
+            
+            economy.AddGold(currentPlayer, reward);
+            UIManager.Instance.ShowMessage($"{currentPlayer.nickname} 经过起点，获得 {reward} 金币！");
         }
         
         currentPlayer.position = newPosition;
@@ -198,12 +249,26 @@ public class GameManager : MonoBehaviour
             player.hasImmunity = false;
             UIManager.Instance.ShowMessage($"{player.nickname} 使用免罚卡避免了被送入医院！");
         }
+        else if (player.character != null && player.character.freeHospitalPolice)
+        {
+            player.isInHospital = true;
+            player.skipTurns = 1;
+            UIManager.Instance.ShowMessage($"{player.nickname} 被送入医院，但因律师身份免交罚款！");
+        }
         else
         {
             player.isInHospital = true;
             player.skipTurns = 1;
-            economy.SubtractGold(player, 200);
-            UIManager.Instance.ShowMessage($"{player.nickname} 被送入医院！");
+            
+            int fine = 200;
+            // 应用角色额外罚款
+            if (player.character != null)
+            {
+                fine += player.character.extraHospitalPoliceFine;
+            }
+            
+            economy.SubtractGold(player, fine);
+            UIManager.Instance.ShowMessage($"{player.nickname} 被送入医院，支付 {fine} 金币！");
         }
     }
 
@@ -216,6 +281,13 @@ public class GameManager : MonoBehaviour
         {
             player.hasImmunity = false;
             UIManager.Instance.ShowMessage($"{player.nickname} 使用免罚卡避免了被送入警局！");
+        }
+        else if (player.character != null && player.character.freeHospitalPolice)
+        {
+            player.isInPoliceStation = true;
+            player.skipTurns = 1;
+            UIManager.Instance.ShowPoliceStationPanel(player);
+            UIManager.Instance.ShowMessage($"{player.nickname} 被送入警局，但因律师身份免交保释金！");
         }
         else
         {
@@ -259,18 +331,21 @@ public class GameManager : MonoBehaviour
     {
         Player currentPlayer = players[currentPlayerIndex];
         
-        if (economy.HasEnoughGold(currentPlayer, property.price))
+        // 计算考虑角色折扣后的购买价格
+        int buyPrice = economy.CalculateBuyPrice(property, currentPlayer);
+        
+        if (economy.HasEnoughGold(currentPlayer, buyPrice))
         {
-            economy.SubtractGold(currentPlayer, property.price);
+            economy.SubtractGold(currentPlayer, buyPrice);
             property.owner = currentPlayer;
             currentPlayer.properties.Add(property);
             
-            UIManager.Instance.ShowMessage($"{currentPlayer.nickname} 购买了 {property.name}！");
+            UIManager.Instance.ShowMessage($"{currentPlayer.nickname} 购买了 {property.name}，花费 {buyPrice} 金币！");
             NotifyPlayerInfoChanged(currentPlayer);
         }
         else
         {
-            UIManager.Instance.ShowError("金币不足！");
+            UIManager.Instance.ShowError($"金币不足！需要 {buyPrice} 金币");
         }
     }
 
