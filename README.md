@@ -40,7 +40,7 @@ Monopoly/
 
 ## 快速开始
 
-1. 使用 Unity Hub 打开 `Monopoly_Unity_Project` 目录
+1. 使用 Unity Hub 打开 `Monopoly_3D` 目录
 2. 配置跨端构建环境
 3. 构建对应平台的客户端
 
